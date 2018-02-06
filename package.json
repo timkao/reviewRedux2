@@ -4,7 +4,7 @@
   "description": "A chatty appy chat app",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -w & nodemon -w server server",
+    "start": "webpack -w & nodemon server -w server",
     "start-server": "nodemon server",
     "build-client": "webpack",
     "seed": "node seed.js"

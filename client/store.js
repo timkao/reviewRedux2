@@ -1,5 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import loggerMiddleware from 'redux-logger'
+import thunkMiddleware from 'redux-thunk'
+import axios from 'axios'
 
 const initialState = {
   messages: [],
@@ -31,6 +33,17 @@ export const gotNewMessageFromServer = (message) => {
   }
 }
 
+export const fetchMessage = () => {
+  return (dispatch) => {
+    return axios.get('/api/messages')
+    .then(res => res.data)
+    .then(messages => {
+      const action = gotMessageFromServer(messages)
+      dispatch(action)
+    });
+  }
+}
+
 function reducer(state = initialState, action) {
   switch (action.type) {
     case GOT_MESSAGES_FROM_SERVER:
@@ -44,5 +57,5 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer, applyMiddleware(loggerMiddleware))
+const store = createStore(reducer, applyMiddleware(loggerMiddleware, thunkMiddleware))
 export default store

@@ -1,4 +1,5 @@
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import loggerMiddleware from 'redux-logger'
 
 const initialState = {
   messages: [],
@@ -43,5 +44,5 @@ function reducer(state = initialState, action) {
   }
 }
 
-const store = createStore(reducer)
+const store = createStore(reducer, applyMiddleware(loggerMiddleware))
 export default store

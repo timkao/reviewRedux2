@@ -10,3 +10,12 @@ export const gotMessageFromServer = (messages) => {
     messages: messages
   }
 }
+
+function reducer(state = initialState, action) {
+  switch (action.type) {
+    case GOT_MESSAGE_FROM_SERVER:
+      return Object.assign({}, state, {messages: action.messages})
+    default:
+      return state
+  }
+}

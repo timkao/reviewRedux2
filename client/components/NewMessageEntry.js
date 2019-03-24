@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import store, { writeMessage, gotNewMessageFromServer } from '../store';
 import axios from 'axios';
+import socket from '../socket';
 
 export default class NewMessageEntry extends Component {
 
@@ -30,7 +31,10 @@ export default class NewMessageEntry extends Component {
     const content = this.state.newMessageEntry
     axios.post('/api/messages', { content: content, channelId: this.props.channelId })
       .then(res => res.data)
-      .then(message => store.dispatch(gotNewMessageFromServer(message)));
+      .then(message => {
+        store.dispatch(gotNewMessageFromServer(message))
+        socket.emit('new-message', message);
+      });
   }
 
   render () {

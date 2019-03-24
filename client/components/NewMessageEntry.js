@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import store, { writeMessage } from '../store';
+import store, { writeMessage, gotNewMessageFromServer } from '../store';
+import axios from 'axios';
 
 export default class NewMessageEntry extends Component {
 
@@ -7,6 +8,7 @@ export default class NewMessageEntry extends Component {
     super(props)
     this.state = store.getState()
     this.handleChange = this.handleChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
@@ -23,11 +25,20 @@ export default class NewMessageEntry extends Component {
     store.dispatch(action)
   }
 
+  handleSubmit(ev) {
+    ev.preventDefault()
+    const content = this.state.newMessageEntry
+    axios.post('/api/messages', { content: content, channelId: this.props.channelId })
+      .then(res => res.data)
+      .then(message => store.dispatch(gotNewMessageFromServer(message)));
+  }
+
   render () {
     const { newMessageEntry } = this.state
+    const { handleChange, handleSubmit } = this
 
     return (
-      <form id="new-message-form">
+      <form id="new-message-form" onSubmit={handleSubmit}>
         <div className="input-group input-group-lg">
           <input
             className="form-control"
@@ -35,7 +46,7 @@ export default class NewMessageEntry extends Component {
             name="content"
             placeholder="Say something nice..."
             value={newMessageEntry}
-            onChange={this.handleChange}
+            onChange={handleChange}
           />
           <span className="input-group-btn">
             <button className="btn btn-default" type="submit">Chat!</button>
